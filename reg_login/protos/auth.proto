@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.example.grpc;
+
+message loginRequest {
+    string customer_name = 1;
+
+    string customer_password = 2;
+}
+
+message registerRequest {
+    string customer_name = 1;
+
+    string customer_password = 2;
+}
+
+
+message validationResponce {
+    string valid = 1;
+}
+
+service auth {
+    rpc login (loginRequest) returns (validationResponce);
+    rpc register (registerRequest) returns (validationResponce);
+}
