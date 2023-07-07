@@ -1,7 +1,7 @@
 import grpc
 #from . import auth_pb2_grpc, auth_pb2 
-import auth_pb2
-import auth_pb2_grpc
+from . import auth_pb2
+from . import auth_pb2_grpc
 
 def runlogin(cn, cp) -> None:
     with grpc.insecure_channel("localhost:50051") as channel:

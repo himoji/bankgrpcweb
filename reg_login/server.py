@@ -3,39 +3,42 @@ import logging
 from concurrent.futures import ThreadPoolExecutor
 import grpc
 
-from auth_pb2_grpc import add_authServicer_to_server, authServicer
-from auth_pb2 import loginRequest, registerRequest, validationResponce
-import main
+#from auth_pb2_grpc import add_authServicer_to_server, authServicer
+#from auth_pb2 import auth_pb2.loginRequest, auth_pb2.registerRequest, auth_pb2.validationResponce
+from . import auth_pb2_grpc
+from . import auth_pb2
+from . import main
 
-#from . import loginRequest, registerRequest, validationResponce, authServicer, add_authServicer_to_server, auth_pb2_grpc, main
+#from . import auth_pb2.loginRequest, auth_pb2.registerRequest, auth_pb2.validationResponce, authServicer, add_authServicer_to_server, auth_pb2_grpc, main
 
-class Auth(authServicer):
+class Auth(auth_pb2_grpc.authServicer):
 
-    def login(self, request: loginRequest, context) -> validationResponce:
+    def login(self, request: auth_pb2.loginRequest, context) -> auth_pb2.validationResponce:
         print("Serving login:")
 
         if main.accountManagment.login(request.customer_name, request.customer_password) == "no_customer":
             print("bad login")
-            return validationResponce(valid="false")
+            return auth_pb2.validationResponce(valid="false")
 
-        return validationResponce(valid="true")
+        return auth_pb2.validationResponce(valid="true")
     
-    def register(self, request: registerRequest, context) -> validationResponce:
+    def register(self, request: auth_pb2.registerRequest, context) -> auth_pb2.validationResponce:
         print("Serving register:")
 
         if main.accountManagment.register(request.customer_name, request.customer_password):
             print("registered")
-            return validationResponce(valid="true")
+            return auth_pb2.validationResponce(valid="true")
         
-        return validationResponce(valid="false")
+        return auth_pb2.validationResponce(valid="false")
 
 
 
 def serve() -> None:
     port = '50051'
     server = grpc.server(ThreadPoolExecutor(max_workers=10))
+    #server = grpc.grpc.server()
 
-    add_authServicer_to_server(Auth(), server)
+    auth_pb2_grpc.add_authServicer_to_server(Auth(), server)
 
     server.add_insecure_port('[::]:' + port)
     server.start()

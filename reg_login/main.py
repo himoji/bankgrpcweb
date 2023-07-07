@@ -41,7 +41,8 @@ def securityCheck(*args) -> bool:
         "()",
         "or",
         "=",
-        "=="
+        "==",
+        "and"
                          ]
     
     for word in args:
@@ -125,3 +126,5 @@ class accountManagment:
                 return True
         except: pass
         return False
+    
+    

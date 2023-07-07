@@ -1,2 +1,2 @@
 # BrowserBank
-py, postgresql, grpc
+py, mysql, flask, virtualenv, jinja2, mysql-connector-python
