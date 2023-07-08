@@ -53,27 +53,42 @@ def securityCheck(*args) -> bool:
         return True
     return False
 
+def updateCache(customer_id, cash_amount):
+        with redis.Redis("localhost", 6379) as redis_client:
+            redis_client.set(customer_id, cash_amount)
+            print(f"[SET]: {customer_id}: {cash_amount}")
+
 
 class atm():
-    def deposit(customer_id, cash) -> bool:
+    def __init__(self) -> None:
+        pass
+
+    
+
+    def rundeposit(customer_id, cash) -> bool:
         '''
     'Deposit command to update CASH at customer_id.\n
     Cash += cash_input for user.\n
     takes 0 args, only asks inside of function.
     '''
         cursor = db.cursor()
+        
         try:
-            if int(cash) >= 0 and securityCheck(customer_id)==False:
+            if int(cash) >= 0:
                 print("Depositing cash")
                 cursor.execute(f"update customers_table set customer_cash = customer_cash + {cash} where customer_id = '{customer_id}';")
+
+                cursor.execute(f"select customer_cash from customers_table where customer_id = '{customer_id}';")
+                updateCache(customer_id, cursor.fetchone()[0])
+
                 cursor.close()
                 db.commit()
                 return True
-        except: pass
+        except Exception as err: print(err)
         return False
 
 
-    def withdraw(customer_id, cash) -> bool:
+    def runwithdraw(customer_id, cash) -> bool:
         '''
     Withdraw command to update CASH at customer_id.\n
     Cash -= cash_input for user.\n
@@ -81,8 +96,12 @@ class atm():
     '''
         cursor = db.cursor()
         try:
-            if int(cash) >= 0 and securityCheck(customer_id)==False:
+            if int(cash) >= 0:
                 cursor.execute(f"update customers_table set customer_cash = customer_cash - {cash} where customer_id = '{customer_id}';")
+
+                cursor.execute(f"select customer_cash from customers_table where customer_id = '{customer_id}';")
+                updateCache(customer_id, cursor.fetchone()[0])
+
                 cursor.close()
                 db.commit()
                 return True
@@ -90,7 +109,7 @@ class atm():
         return False
 
 
-    def send(customer_id, cash, taker) -> bool:
+    def runsend(customer_id, cash, taker) -> bool:
         '''
     Send command to update CASH at customer_id[i] and customer_id[j].\n
     Sends cash from one user to another.\n
@@ -110,12 +129,19 @@ class atm():
             cash = int(cash)
             cash_on_sender_card = int(cash_on_sender_card)
 
-            if cash >= 0 and cash_on_sender_card - cash >= 0 and securityCheck(customer_id, taker)==False:
+            if cash >= 0 and cash_on_sender_card - cash >= 0:
                 print("Sending cash")
                 cursor.execute(f"update customers_table set customer_cash = customer_cash + {cash} where customer_id = '{taker}';")
                 print("send #1")
                 cursor.execute(f"update customers_table set customer_cash = customer_cash - {cash} where customer_id = '{customer_id}';")
                 print("send #2")
+
+                cursor.execute(f"select customer_cash from customers_table where customer_id = '{customer_id}';")
+                updateCache(customer_id, cursor.fetchone()[0])
+
+                cursor.execute(f"select customer_cash from customers_table where customer_id = '{taker}';")
+                updateCache(customer_id, cursor.fetchone()[0])
+
                 cursor.close()
                 db.commit()
                 return True
@@ -146,6 +172,8 @@ class atm():
             cursor.close()
             return customer_cash[0]
         except: pass
+
+
     
     def getCustomerId(customer_name) -> int:
 

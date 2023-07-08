@@ -15,17 +15,17 @@ class bankStub(object):
             channel: A grpc.Channel.
         """
         self.deposit = channel.unary_unary(
-                '/com.zxc.grpc.bank/deposit',
+                '/com.bank.grpc.bank/deposit',
                 request_serializer=bank__pb2.depositRequest.SerializeToString,
                 response_deserializer=bank__pb2.validationResponce.FromString,
                 )
         self.withdraw = channel.unary_unary(
-                '/com.zxc.grpc.bank/withdraw',
+                '/com.bank.grpc.bank/withdraw',
                 request_serializer=bank__pb2.withdrawRequest.SerializeToString,
                 response_deserializer=bank__pb2.validationResponce.FromString,
                 )
         self.send = channel.unary_unary(
-                '/com.zxc.grpc.bank/send',
+                '/com.bank.grpc.bank/send',
                 request_serializer=bank__pb2.sendRequest.SerializeToString,
                 response_deserializer=bank__pb2.validationResponce.FromString,
                 )
@@ -72,7 +72,7 @@ def add_bankServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'com.zxc.grpc.bank', rpc_method_handlers)
+            'com.bank.grpc.bank', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -91,7 +91,7 @@ class bank(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.zxc.grpc.bank/deposit',
+        return grpc.experimental.unary_unary(request, target, '/com.bank.grpc.bank/deposit',
             bank__pb2.depositRequest.SerializeToString,
             bank__pb2.validationResponce.FromString,
             options, channel_credentials,
@@ -108,7 +108,7 @@ class bank(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.zxc.grpc.bank/withdraw',
+        return grpc.experimental.unary_unary(request, target, '/com.bank.grpc.bank/withdraw',
             bank__pb2.withdrawRequest.SerializeToString,
             bank__pb2.validationResponce.FromString,
             options, channel_credentials,
@@ -125,7 +125,7 @@ class bank(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/com.zxc.grpc.bank/send',
+        return grpc.experimental.unary_unary(request, target, '/com.bank.grpc.bank/send',
             bank__pb2.sendRequest.SerializeToString,
             bank__pb2.validationResponce.FromString,
             options, channel_credentials,
