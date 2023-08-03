@@ -1,10 +1,18 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
-
+from flask import Blueprint, render_template, request, redirect, url_for
+from UserLogin import UserLogin
 auth_views = Blueprint("auth_views", __name__)
 from . import client
+from ..Startapp import login_manager, login_user
+from . import main
+
+@login_manager.user_loader
+def load_customer(customer_id):
+    print(f"[LOADING USER] {customer_id}")
+    return UserLogin.fromDB(customer_id, main.db)
+
 
 #account management stuff
-@auth_views.route("/login", methods=["GET", "POST"]) #type: ignore
+"""@auth_views.route("/login", methods=["GET", "POST"]) #type: ignore
 def loginPage():
     if request.method == 'POST':
         customer_name = request.form['customer_name']
@@ -14,7 +22,22 @@ def loginPage():
         else: 
             print("Login failed")
             return render_template("web/login.html", success="false")
+    return render_template("web/login.html")"""
+
+
+@auth_views.route("/login", methods=["GET", "POST"]) #type: ignore
+def loginPage():
+    if request.method == 'POST':
+        customer_name = request.form['customer_name']
+        customer_password = request.form['customer_password']
+        customer = main.accountManagment.login(customer_name, customer_password)
+        if customer:
+            userlogin = UserLogin.create(customer)
+            login_user(userlogin)
+            return redirect(url_for("auth_views.accountPage"))
+
     return render_template("web/login.html")
+
 
 @auth_views.route("/register", methods=["GET", "POST"]) #type: ignore
 def registerPage():
@@ -27,6 +50,7 @@ def registerPage():
             print("Registration failed")
             return render_template("web/register.html", success="false")
     return render_template("web/register.html")
+
 
 @auth_views.route("/account")
 def accountPage():

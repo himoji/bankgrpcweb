@@ -3,7 +3,7 @@ import grpc
 from . import auth_pb2
 from . import auth_pb2_grpc
 
-def runlogin(cn, cp) -> None:
+def runlogin(cn, cp) -> str:
     with grpc.insecure_channel("localhost:50051") as channel:
         stub = auth_pb2_grpc.authStub(channel)
         # Read from an generator
@@ -12,7 +12,7 @@ def runlogin(cn, cp) -> None:
     print(f"Validation: {response.valid}")
     return response.valid
 
-def runregister(cn, cp) -> None:
+def runregister(cn, cp) -> str:
     with grpc.insecure_channel("localhost:50051") as channel:
         stub = auth_pb2_grpc.authStub(channel)
         # Read from an generator

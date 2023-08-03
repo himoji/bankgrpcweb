@@ -15,7 +15,7 @@ import psycopg2
 import redis
 
 
-db = psycopg2.connect(database="db", user="postgres", password="admin", port=13337)
+db = psycopg2.connect(database="postgres", user="postgres", password="admin", port=13337)
 cursor = db.cursor()
 print("Connected successfully")
 
@@ -62,8 +62,78 @@ def updateCache(customer_id, cash_amount):
 class atm():
     def __init__(self) -> None:
         pass
-
     
+
+    def setAnswered(customer_id, question_id):
+        try:
+            with db.cursor() as cursor:
+                cursor.execute("update customers_table set answered = answered || '{" + str(question_id) +"}' where customer_id = " + str(customer_id) + ";")
+
+        except psycopg2.Error as e:
+            print("Error executing the query:", e)
+            return None 
+
+
+    def isAnswered(customer_id, question_id: int):
+        try:
+            with db.cursor() as cursor:
+                question_id = int(question_id)
+                cursor.execute(f"SELECT answered FROM customers_table WHERE customer_id = {customer_id}")
+                answered_list = cursor.fetchone()[0]
+                
+                return question_id in answered_list
+            
+        except psycopg2.Error as e:
+            print("Error executing the query:", e)
+            return None 
+        
+
+    def getQuestionTextById(id):
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(f"SELECT question_text FROM questions WHERE id = {id}")
+                question = cursor.fetchone()
+
+                if question:
+                    return question[0]
+                else:
+                    print("No questions found in the database.")
+                    return None
+        except psycopg2.Error as e:
+            print("Error executing the query:", e)
+            return None 
+        
+    def getRandomQuestionId():
+        try:
+            with db.cursor() as cursor:
+                cursor.execute("SELECT id FROM questions ORDER BY RANDOM() LIMIT 1")
+                question = cursor.fetchone()
+
+                if question:
+                    return question[0]
+                else:
+                    print("No questions found in the database.")
+                    return None
+        except psycopg2.Error as e:
+            print("Error executing the query:", e)
+            return None 
+        
+    def checkAnswer(answer, question_id) -> bool:
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(f"SELECT answer_text FROM questions WHERE id = '{question_id}'")
+                true_answer = cursor.fetchone()
+
+                if true_answer[0] == answer:
+                    return True
+                else:
+                    print("No answers found for the given question number.", true_answer[0], answer)
+                    return None
+        except psycopg2.Error as e:
+            print("Error executing the query:", e)
+            return None
+        return False
+
 
     def rundeposit(customer_id, cash) -> bool:
         '''
@@ -181,6 +251,7 @@ class atm():
 
         cursor.execute(f"select customer_id from customers_table where customer_name = '{customer_name.lower()}';") # type: ignore
         result = cursor.fetchone()
+        print(result)
 
         if isinstance(result[0], int):
             return result[0]

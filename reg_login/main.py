@@ -14,7 +14,7 @@ check when send money
 import psycopg2
 
 
-db = psycopg2.connect(database="db", user="postgres", password="admin", port=13337)
+db = psycopg2.connect(database="postgres", user="postgres", password="admin", port=13337)
 cursor = db.cursor()
 print("Connected successfully")
 
@@ -58,7 +58,7 @@ def securityCheck(*args) -> bool:
 
 
 class accountManagment:
-    def login(customer_name, password) -> str:
+    def login(customer_name, password) -> bool:
         '''
     Login command to take user input and check is it password.\n
     takes 2 args
@@ -70,9 +70,9 @@ class accountManagment:
         cursor.close()
         try:
             if isinstance(result[0], int) and securityCheck(customer_name, password)==False:
-                return customer_name
+                return True
         except: pass
-        return "no_customer"
+        return False
 
 
     def changePassword(customer_name, old_password, new_password) -> bool:
@@ -127,4 +127,19 @@ class accountManagment:
         except: pass
         return False
     
+    def getCustomer(customer_id) -> str:
+        '''
+    Login command to take user input and check is it password.\n
+    takes 2 args
+        '''
+        try:
+            with db.cursor() as cursor:
+                cursor.execute(f"select customer_id from customers_table where customer_name = '{customer_name.lower()}' and customer_password = '{password}';") # type: ignore
+                result = cursor.fetchone()
+                if not result:
+                    return False
+                return result
+        except:
+            print("[GET CUSTOMER ERROR]")
+        return False
     

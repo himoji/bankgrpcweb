@@ -53,6 +53,29 @@ def sendPage():
             return render_template("/atm/send.html", success="false")
     return render_template("/atm/send.html", customer_name = customer_name)
 
+@bank_views.route("/bonus", methods=["GET", "POST"]) #type: ignore
+def bonusPage():
+    args = request.args
+    customer_name = args.get("customer_name")
+    question_id = main.atm.getRandomQuestionId()
+    return render_template("/atm/bonus.html", question_text = main.atm.getQuestionTextById(question_id), question_id = question_id, customer_name = customer_name)
+
+
+@bank_views.route("/getBonus", methods=["GET", "POST"]) #type: ignore
+def getBonusPage():
+    args = request.args
+    customer_name = args.get("customer_name")
+    customer_id = main.atm.getCustomerId(customer_name)
+    answer = args.get("answer")
+    question_id = args.get("question_id")
+    print("[BONUS] Checking")
+    if main.atm.checkAnswer(answer, question_id) and main.atm.isAnswered(customer_id, question_id)==False:
+        main.atm.setAnswered(customer_id, question_id)
+        main.atm.rundeposit(customer_id, 100)
+        print("[BONUS] Checking [GOOD]")
+
+    return redirect(url_for("auth_views.accountPage", customer_name = customer_name))
+
 
 
 
