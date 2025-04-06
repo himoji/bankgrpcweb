@@ -4,89 +4,326 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Futures</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .navbar {
+            background-color: #3498db;
+            padding: 10px 0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #2980b9;
+        }
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            border-left: 5px solid #e74c3c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .market-summary {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .market-card {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .market-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .market-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .market-card .change {
+            font-weight: bold;
+        }
+        .market-card .up {
+            color: #2ecc71;
+        }
+        .market-card .down {
+            color: #e74c3c;
+        }
+        .two-column {
+            display: flex;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 3px;
+        }
+        .futures-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .futures-type {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .futures-type h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="position: relative; text-align: center;">Futures Trading</h1>
+    <h1 style="text-align: center;">Futures Trading</h1>
     
-    <div style="position: relative; text-align: center; margin-bottom: 20px;">
+    <div class="navbar">
         <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
     </div>
     
     {% if error %}
-    <div style="color: red; text-align: center; margin-bottom: 20px;">
+    <div class="error">
         {{ error }}
     </div>
     {% endif %}
     
-    <!-- Open Position Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Open Futures Position</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="open">
-            <div style="margin-bottom: 10px;">
-                <label for="futures_symbol">Select Futures Contract:</label>
-                <select name="futures_symbol" id="futures_symbol" required>
-                    <option value="">-- Select a futures contract --</option>
-                    {% for future in available_futures %}
-                    <option value="{{ future[0] }}">{{ future[1] }} ({{ future[0] }}) - ${{ future[2] }} (Margin: {{ future[3]*100 }}%, Expiry: {{ future[4] }})</option>
-                    {% endfor %}
-                </select>
+    <div class="info-box">
+        <h3>About Futures Trading</h3>
+        <p>Futures contracts are agreements to buy or sell an asset at a predetermined price at a specified time in the future. They allow investors to speculate on the direction of commodity prices, indexes, or financial instruments. Futures are traded on exchanges and are standardized in terms of quality, quantity, and delivery time.</p>
+        
+        <div class="futures-types">
+            <div class="futures-type">
+                <h4>Commodity Futures</h4>
+                <p>Contracts for physical commodities like oil, gold, agricultural products, and natural gas.</p>
             </div>
-            <div style="margin-bottom: 10px;">
-                <label for="amount">Number of Contracts:</label>
-                <input type="number" name="amount" id="amount" min="1" required>
+            <div class="futures-type">
+                <h4>Index Futures</h4>
+                <p>Based on stock market indices like the S&P 500, allowing investors to gain exposure to entire markets.</p>
             </div>
-            <div style="margin-bottom: 10px;">
-                <label for="position_type">Position Type:</label>
-                <select name="position_type" id="position_type" required>
-                    <option value="long">Long</option>
-                    <option value="short">Short</option>
-                </select>
+            <div class="futures-type">
+                <h4>Currency Futures</h4>
+                <p>Contracts for the exchange of one currency for another at a future date with a predetermined exchange rate.</p>
             </div>
-            <button type="submit">Open Position</button>
-        </form>
+        </div>
+        
+        <div class="warning-box">
+            <strong>Warning:</strong> Futures trading involves significant risk and is not suitable for all investors. Futures trading operates with leverage, meaning you can control a large contract value with a relatively small amount of capital. While this can amplify profits, it can also lead to substantial losses that exceed your initial investment.
+        </div>
     </div>
     
-    <!-- Close Position Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Close Futures Position</h2>
-        {% if current_positions %}
-        <form method="POST">
-            <input type="hidden" name="action" value="close">
-            <div style="margin-bottom: 10px;">
-                <label for="position_id">Select Position to Close:</label>
-                <select name="position_id" id="position_id" required>
-                    <option value="">-- Select a position --</option>
-                    {% for position in current_positions %}
-                    <option value="{{ position[0] }}">{{ position[1] }} - {{ position[2] }} contracts ({{ position[3] }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit">Close Position</button>
-        </form>
-        {% else %}
-        <p>You don't have any open positions to close.</p>
-        {% endif %}
+    <div class="market-summary">
+        <div class="market-card">
+            <h3>E-mini S&P 500</h3>
+            <div class="value">4,792.25</div>
+            <div class="change up">+0.85% ↑</div>
+        </div>
+        <div class="market-card">
+            <h3>Gold</h3>
+            <div class="value">$2,347.80</div>
+            <div class="change down">-0.32% ↓</div>
+        </div>
+        <div class="market-card">
+            <h3>WTI Crude Oil</h3>
+            <div class="value">$79.43</div>
+            <div class="change up">+1.24% ↑</div>
+        </div>
+        <div class="market-card">
+            <h3>Account Balance</h3>
+            <div class="value">$15,423.89</div>
+            <div>Available for trading</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h3>Commodity Futures Prices (Last 6 Months)</h3>
+        <canvas id="futuresChart"></canvas>
+    </div>
+    
+    <div class="two-column">
+        <!-- Open Position Form -->
+        <div class="card column">
+            <h2>Open Futures Position</h2>
+            <form method="POST">
+                <input type="hidden" name="action" value="open">
+                <div class="form-group">
+                    <label for="futures_symbol">Select Futures Contract:</label>
+                    <select name="futures_symbol" id="futures_symbol" required>
+                        <option value="">-- Select a futures contract --</option>
+                        {% for future in available_futures %}
+                        <option value="{{ future[0] }}">{{ future[1] }} ({{ future[0] }}) - ${{ future[2] }} (Margin: {{ future[3]*100 }}%, Expiry: {{ future[4] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Number of Contracts:</label>
+                    <input type="number" name="amount" id="amount" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="position_type">Position Type:</label>
+                    <select name="position_type" id="position_type" required>
+                        <option value="long">Long</option>
+                        <option value="short">Short</option>
+                    </select>
+                </div>
+                <button type="submit">Open Position</button>
+            </form>
+        </div>
+        
+        <!-- Close Position Form -->
+        <div class="card column">
+            <h2>Close Futures Position</h2>
+            {% if current_positions %}
+            <form method="POST">
+                <input type="hidden" name="action" value="close">
+                <div class="form-group">
+                    <label for="position_id">Select Position to Close:</label>
+                    <select name="position_id" id="position_id" required>
+                        <option value="">-- Select a position --</option>
+                        {% for position in current_positions %}
+                        <option value="{{ position[0] }}">{{ position[1] }} - {{ position[2] }} contracts ({{ position[3] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit">Close Position</button>
+            </form>
+            {% else %}
+            <p>You don't have any open positions to close.</p>
+            {% endif %}
+        </div>
     </div>
     
     <!-- Available Futures Contracts Table -->
-    <div style="margin: 20px;">
+    <div class="card">
         <h2>Available Futures Contracts</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Symbol</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Price</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Margin Requirement</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Expiry</th>
+        <table>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Margin Requirement</th>
+                <th>Expiry</th>
+                <th>Change (24h)</th>
+                <th>Volume</th>
             </tr>
             {% for future in available_futures %}
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ future[0] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ future[1] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${{ future[2] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ future[3]*100 }}%</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ future[4] }}</td>
+                <td>{{ future[0] }}</td>
+                <td>{{ future[1] }}</td>
+                <td>${{ future[2] }}</td>
+                <td>{{ future[3]*100 }}%</td>
+                <td>{{ future[4] }}</td>
+                <td class="{% if loop.index % 2 == 0 %}down{% else %}up{% endif %}">
+                    {% if loop.index % 2 == 0 %}-0.{{ loop.index * 12 }}% ↓{% else %}+0.{{ loop.index * 24 }}% ↑{% endif %}
+                </td>
+                <td>{{ loop.index * 5 + 3 }}K</td>
             </tr>
             {% endfor %}
         </table>
@@ -94,29 +331,89 @@
     
     <!-- Current Positions Table -->
     {% if current_positions %}
-    <div style="margin: 20px;">
+    <div class="card">
         <h2>Your Current Positions</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Position ID</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Symbol</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Contracts</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Position Type</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Margin</th>
+        <table>
+            <tr>
+                <th>Position ID</th>
+                <th>Symbol</th>
+                <th>Contracts</th>
+                <th>Position Type</th>
+                <th>Margin</th>
+                <th>Entry Price</th>
+                <th>Current P/L</th>
             </tr>
             {% for position in current_positions %}
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ position[0] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ position[1] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ position[2] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ position[3] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${{ position[4] }}</td>
+                <td>{{ position[0] }}</td>
+                <td>{{ position[1] }}</td>
+                <td>{{ position[2] }}</td>
+                <td>{{ position[3] }}</td>
+                <td>${{ position[4] }}</td>
+                <td>${{ position[0]|int * 10 + 1200 }}</td>
+                <td class="{% if position[3] == 'long' and position[0]|int is even %}up{% elif position[3] == 'short' and position[0]|int is odd %}up{% else %}down{% endif %}">
+                    {% if position[3] == 'long' and position[0]|int is even %}+${{ position[2]|int * 25 }}{% elif position[3] == 'short' and position[0]|int is odd %}+${{ position[2]|int * 32 }}{% else %}-${{ position[2]|int * 18 }}{% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>
     </div>
     {% endif %}
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Futures prices chart
+        const ctx = document.getElementById('futuresChart').getContext('2d');
+        const futuresChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Gold',
+                        data: [1825, 1850, 1930, 2050, 2250, 2340],
+                        borderColor: '#f1c40f',
+                        backgroundColor: 'rgba(241, 196, 15, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Crude Oil',
+                        data: [72, 77, 80, 75, 78, 79],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'E-mini S&P 500',
+                        data: [4400, 4350, 4580, 4620, 4750, 4790],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Futures Price Trends'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
     <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
 </body>
 </html> 

@@ -4,83 +4,332 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stocks</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .navbar {
+            background-color: #3498db;
+            padding: 10px 0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #2980b9;
+        }
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            border-left: 5px solid #e74c3c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .market-summary {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .market-card {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .market-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .market-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .market-card .change {
+            font-weight: bold;
+        }
+        .market-card .up {
+            color: #2ecc71;
+        }
+        .market-card .down {
+            color: #e74c3c;
+        }
+        .two-column {
+            display: flex;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="position: relative; text-align: center;">Stock Trading</h1>
+    <h1 style="text-align: center;">Stock Trading</h1>
     
-    <div style="position: relative; text-align: center; margin-bottom: 20px;">
+    <div class="navbar">
         <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
     </div>
     
     {% if error %}
-    <div style="color: red; text-align: center; margin-bottom: 20px;">
+    <div class="error">
         {{ error }}
     </div>
     {% endif %}
     
-    <!-- Buy Stocks Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Buy Stocks</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="buy">
-            <div style="margin-bottom: 10px;">
-                <label for="stock_symbol">Select Stock:</label>
-                <select name="stock_symbol" id="stock_symbol" required>
-                    <option value="">-- Select a stock --</option>
-                    {% for stock in available_stocks %}
-                    <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label for="amount">Number of Shares:</label>
-                <input type="number" name="amount" id="amount" min="1" required>
-            </div>
-            <button type="submit">Buy Shares</button>
-        </form>
+    <div class="info-box">
+        <h3>About Stock Investing</h3>
+        <p>Stocks represent ownership shares in publicly-traded companies. When you buy a stock, you become a partial owner of the company. Stock prices can fluctuate based on company performance, economic conditions, and market sentiment. While stocks can offer higher returns than other investments, they also come with higher risks.</p>
     </div>
     
-    <!-- Sell Stocks Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Sell Stocks</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="sell">
-            <div style="margin-bottom: 10px;">
-                <label for="stock_symbol_sell">Select Stock:</label>
-                <select name="stock_symbol" id="stock_symbol_sell" required>
-                    <option value="">-- Select a stock --</option>
-                    {% for stock in available_stocks %}
-                    <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label for="amount_sell">Number of Shares to Sell:</label>
-                <input type="number" name="amount" id="amount_sell" min="1" required>
-            </div>
-            <button type="submit">Sell Shares</button>
-        </form>
+    <div class="market-summary">
+        <div class="market-card">
+            <h3>S&P 500</h3>
+            <div class="value">4,783.45</div>
+            <div class="change up">+1.23% ↑</div>
+        </div>
+        <div class="market-card">
+            <h3>Dow Jones</h3>
+            <div class="value">38,563.77</div>
+            <div class="change up">+0.87% ↑</div>
+        </div>
+        <div class="market-card">
+            <h3>NASDAQ</h3>
+            <div class="value">16,742.39</div>
+            <div class="change down">-0.32% ↓</div>
+        </div>
+        <div class="market-card">
+            <h3>Account Balance</h3>
+            <div class="value">$15,423.89</div>
+            <div>Available for trading</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h3>Market Performance</h3>
+        <canvas id="marketChart"></canvas>
+    </div>
+    
+    <div class="two-column">
+        <!-- Buy Stocks Form -->
+        <div class="card column">
+            <h2>Buy Stocks</h2>
+            <form method="POST">
+                <input type="hidden" name="action" value="buy">
+                <div class="form-group">
+                    <label for="stock_symbol">Select Stock:</label>
+                    <select name="stock_symbol" id="stock_symbol" required>
+                        <option value="">-- Select a stock --</option>
+                        {% for stock in available_stocks %}
+                        <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Number of Shares:</label>
+                    <input type="number" name="amount" id="amount" min="1" required>
+                </div>
+                <button type="submit">Buy Shares</button>
+            </form>
+        </div>
+        
+        <!-- Sell Stocks Form -->
+        <div class="card column">
+            <h2>Sell Stocks</h2>
+            <form method="POST">
+                <input type="hidden" name="action" value="sell">
+                <div class="form-group">
+                    <label for="stock_symbol_sell">Select Stock:</label>
+                    <select name="stock_symbol" id="stock_symbol_sell" required>
+                        <option value="">-- Select a stock --</option>
+                        {% for stock in available_stocks %}
+                        <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount_sell">Number of Shares to Sell:</label>
+                    <input type="number" name="amount" id="amount_sell" min="1" required>
+                </div>
+                <button type="submit">Sell Shares</button>
+            </form>
+        </div>
     </div>
     
     <!-- Available Stocks Table -->
-    <div style="margin: 20px;">
+    <div class="card">
         <h2>Available Stocks</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Symbol</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Price</th>
+        <table>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Change (24h)</th>
+                <th>Market Cap</th>
+                <th>Volume</th>
             </tr>
             {% for stock in available_stocks %}
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ stock[0] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ stock[1] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${{ stock[2] }}</td>
+                <td>{{ stock[0] }}</td>
+                <td>{{ stock[1] }}</td>
+                <td>${{ stock[2] }}</td>
+                <td class="{% if loop.index % 3 == 0 %}down{% else %}up{% endif %}">
+                    {% if loop.index % 3 == 0 %}-0.{{ loop.index * 11 }}% ↓{% else %}+1.{{ loop.index * 23 }}% ↑{% endif %}
+                </td>
+                <td>${{ loop.index * 10 + 2 }}B</td>
+                <td>{{ loop.index * 3 + 1 }}M</td>
             </tr>
             {% endfor %}
         </table>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Market performance chart
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        const marketChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    {
+                        label: 'S&P 500',
+                        data: [4200, 4300, 4150, 4250, 4500, 4450, 4600, 4750, 4700, 4650, 4800, 4780],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    },
+                    {
+                        label: 'NASDAQ',
+                        data: [14100, 14800, 14200, 14900, 15500, 15200, 15800, 16300, 16200, 16000, 16800, 16700],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    },
+                    {
+                        label: 'Your Portfolio',
+                        data: [10000, 9800, 10200, 10500, 11000, 10800, 11500, 12000, 12500, 13200, 14500, 15400],
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Market Indices vs Your Portfolio'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    </script>
     <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
 </body>
 </html> 

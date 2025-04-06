@@ -4,87 +4,362 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bonds</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .navbar {
+            background-color: #3498db;
+            padding: 10px 0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: #2980b9;
+        }
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 3px;
+        }
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ffeeee;
+            border-radius: 5px;
+            border-left: 5px solid #e74c3c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .market-summary {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .market-card {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .market-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .market-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .two-column {
+            display: flex;
+            gap: 20px;
+        }
+        .column {
+            flex: 1;
+        }
+        .bond-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .bond-type {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+        .bond-type h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="position: relative; text-align: center;">Bond Trading</h1>
+    <h1 style="text-align: center;">Bond Trading</h1>
     
-    <div style="position: relative; text-align: center; margin-bottom: 20px;">
+    <div class="navbar">
         <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
     </div>
     
     {% if error %}
-    <div style="color: red; text-align: center; margin-bottom: 20px;">
+    <div class="error">
         {{ error }}
     </div>
     {% endif %}
     
-    <!-- Buy Bonds Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Buy Bonds</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="buy">
-            <div style="margin-bottom: 10px;">
-                <label for="bond_id">Select Bond:</label>
-                <select name="bond_id" id="bond_id" required>
-                    <option value="">-- Select a bond --</option>
-                    {% for bond in available_bonds %}
-                    <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
-                    {% endfor %}
-                </select>
+    <div class="info-box">
+        <h3>About Bond Investing</h3>
+        <p>Bonds are debt securities where investors loan money to an entity (corporate or governmental) for a defined period at a fixed or variable interest rate. Bonds are generally considered more stable than stocks and provide regular income through interest payments. However, they typically offer lower returns than stocks over the long term. Bonds can be a valuable part of a diversified portfolio, particularly for investors seeking income or looking to reduce overall portfolio risk.</p>
+        
+        <div class="bond-types">
+            <div class="bond-type">
+                <h4>Treasury Bonds</h4>
+                <p>Issued by the federal government with maturities of 10+ years. They're considered among the safest investments available.</p>
             </div>
-            <div style="margin-bottom: 10px;">
-                <label for="amount">Investment Amount ($):</label>
-                <input type="number" name="amount" id="amount" min="100" step="100" required>
+            <div class="bond-type">
+                <h4>Corporate Bonds</h4>
+                <p>Issued by companies to fund operations. They typically offer higher yields than government bonds but carry more risk.</p>
             </div>
-            <button type="submit">Purchase Bond</button>
-        </form>
+            <div class="bond-type">
+                <h4>Municipal Bonds</h4>
+                <p>Issued by state and local governments. Interest is often exempt from federal and sometimes state taxes.</p>
+            </div>
+        </div>
     </div>
     
-    <!-- Sell Bonds Form -->
-    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2>Sell Bonds</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="sell">
-            <div style="margin-bottom: 10px;">
-                <label for="bond_id_sell">Select Bond:</label>
-                <select name="bond_id" id="bond_id_sell" required>
-                    <option value="">-- Select a bond --</option>
-                    {% for bond in available_bonds %}
-                    <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label for="amount_sell">Amount to Sell ($):</label>
-                <input type="number" name="amount" id="amount_sell" min="100" step="100" required>
-            </div>
-            <button type="submit">Sell Bond</button>
-        </form>
+    <div class="market-summary">
+        <div class="market-card">
+            <h3>10-Year Treasury</h3>
+            <div class="value">3.45%</div>
+            <div>Yield</div>
+        </div>
+        <div class="market-card">
+            <h3>30-Year Treasury</h3>
+            <div class="value">3.92%</div>
+            <div>Yield</div>
+        </div>
+        <div class="market-card">
+            <h3>Corporate Bond Index</h3>
+            <div class="value">4.87%</div>
+            <div>Average Yield</div>
+        </div>
+        <div class="market-card">
+            <h3>Account Balance</h3>
+            <div class="value">$15,423.89</div>
+            <div>Available for trading</div>
+        </div>
+    </div>
+    
+    <div class="chart-container">
+        <h3>Bond Yield Curve</h3>
+        <canvas id="yieldCurveChart"></canvas>
+    </div>
+    
+    <div class="two-column">
+        <!-- Buy Bonds Form -->
+        <div class="card column">
+            <h2>Buy Bonds</h2>
+            <form method="POST">
+                <input type="hidden" name="action" value="buy">
+                <div class="form-group">
+                    <label for="bond_id">Select Bond:</label>
+                    <select name="bond_id" id="bond_id" required>
+                        <option value="">-- Select a bond --</option>
+                        {% for bond in available_bonds %}
+                        <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Investment Amount ($):</label>
+                    <input type="number" name="amount" id="amount" min="100" step="100" required>
+                </div>
+                <button type="submit">Purchase Bond</button>
+            </form>
+        </div>
+        
+        <!-- Sell Bonds Form -->
+        <div class="card column">
+            <h2>Sell Bonds</h2>
+            <form method="POST">
+                <input type="hidden" name="action" value="sell">
+                <div class="form-group">
+                    <label for="bond_id_sell">Select Bond:</label>
+                    <select name="bond_id" id="bond_id_sell" required>
+                        <option value="">-- Select a bond --</option>
+                        {% for bond in available_bonds %}
+                        <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount_sell">Amount to Sell ($):</label>
+                    <input type="number" name="amount" id="amount_sell" min="100" step="100" required>
+                </div>
+                <button type="submit">Sell Bond</button>
+            </form>
+        </div>
     </div>
     
     <!-- Available Bonds Table -->
-    <div style="margin: 20px;">
+    <div class="card">
         <h2>Available Bonds</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr style="background-color: #f2f2f2;">
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bond ID</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Price</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Yield (%)</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Maturity</th>
+        <table>
+            <tr>
+                <th>Bond ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Yield (%)</th>
+                <th>Maturity</th>
+                <th>Credit Rating</th>
+                <th>Type</th>
             </tr>
             {% for bond in available_bonds %}
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[0] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[1] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${{ bond[2] }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[3] }}%</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[4] }}</td>
+                <td>{{ bond[0] }}</td>
+                <td>{{ bond[1] }}</td>
+                <td>${{ bond[2] }}</td>
+                <td>{{ bond[3] }}%</td>
+                <td>{{ bond[4] }}</td>
+                <td>
+                    {% if loop.index % 4 == 0 %}A-{% elif loop.index % 4 == 1 %}AAA{% elif loop.index % 4 == 2 %}AA+{% else %}BBB+{% endif %}
+                </td>
+                <td>
+                    {% if loop.index % 3 == 0 %}Corporate{% elif loop.index % 3 == 1 %}Treasury{% else %}Municipal{% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Yield curve chart
+        const ctx = document.getElementById('yieldCurveChart').getContext('2d');
+        const yieldChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1 Mo', '3 Mo', '6 Mo', '1 Yr', '2 Yr', '3 Yr', '5 Yr', '7 Yr', '10 Yr', '20 Yr', '30 Yr'],
+                datasets: [
+                    {
+                        label: 'Current Yield Curve',
+                        data: [2.1, 2.4, 2.6, 2.9, 3.1, 3.2, 3.3, 3.4, 3.45, 3.7, 3.92],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '1 Year Ago',
+                        data: [1.2, 1.3, 1.5, 1.8, 2.0, 2.2, 2.4, 2.5, 2.6, 2.8, 3.0],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.0)',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'US Treasury Yield Curve'
+                    }
+                },
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Yield (%)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Maturity'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
     <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
 </body>
 </html> 
