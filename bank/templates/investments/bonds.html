@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonds</title>
+</head>
+<body>
+    <h1 style="position: relative; text-align: center;">Bond Trading</h1>
+    
+    <div style="position: relative; text-align: center; margin-bottom: 20px;">
+        <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
+    </div>
+    
+    {% if error %}
+    <div style="color: red; text-align: center; margin-bottom: 20px;">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <!-- Buy Bonds Form -->
+    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <h2>Buy Bonds</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="buy">
+            <div style="margin-bottom: 10px;">
+                <label for="bond_id">Select Bond:</label>
+                <select name="bond_id" id="bond_id" required>
+                    <option value="">-- Select a bond --</option>
+                    {% for bond in available_bonds %}
+                    <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="amount">Investment Amount ($):</label>
+                <input type="number" name="amount" id="amount" min="100" step="100" required>
+            </div>
+            <button type="submit">Purchase Bond</button>
+        </form>
+    </div>
+    
+    <!-- Sell Bonds Form -->
+    <div style="margin: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <h2>Sell Bonds</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="sell">
+            <div style="margin-bottom: 10px;">
+                <label for="bond_id_sell">Select Bond:</label>
+                <select name="bond_id" id="bond_id_sell" required>
+                    <option value="">-- Select a bond --</option>
+                    {% for bond in available_bonds %}
+                    <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="amount_sell">Amount to Sell ($):</label>
+                <input type="number" name="amount" id="amount_sell" min="100" step="100" required>
+            </div>
+            <button type="submit">Sell Bond</button>
+        </form>
+    </div>
+    
+    <!-- Available Bonds Table -->
+    <div style="margin: 20px;">
+        <h2>Available Bonds</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bond ID</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Price</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Yield (%)</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Maturity</th>
+            </tr>
+            {% for bond in available_bonds %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[0] }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[1] }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">${{ bond[2] }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[3] }}%</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ bond[4] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+</body>
+</html> 

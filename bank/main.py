@@ -13,6 +13,7 @@ check when send money
 #import mysql driver and connect to database with (host, user, password and database name) info
 import psycopg2
 import redis
+from ..main import accountManagment, atm, investment
 
 
 db = psycopg2.connect(database="postgres", user="postgres", password="admin", port=13337)

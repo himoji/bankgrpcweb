@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Portfolio</title>
+</head>
+<body>
+    <h1 style="position: relative; text-align: center;">Investment Portfolio for {{customer_name}}</h1>
+    
+    <div style="position: relative; text-align: center; margin-bottom: 20px;">
+        <a href="{{url_for("bank_views.stocksPage", customer_name=customer_name)}}">Stocks</a>
+        <a href="{{url_for("bank_views.bondsPage", customer_name=customer_name)}}">Bonds</a>
+        <a href="{{url_for("bank_views.futuresPage", customer_name=customer_name)}}">Futures</a>
+        <a href="{{url_for("views.accountPage", customer_name=customer_name)}}">Back to Account</a>
+    </div>
+    
+    <!-- Stocks Section -->
+    <div style="margin: 20px;">
+        <h2>Stocks</h2>
+        {% if portfolio.stocks %}
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Symbol</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Shares</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Current Price</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Total Value</th>
+                </tr>
+                {% for stock in portfolio.stocks %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ stock.symbol }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ stock.shares }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${{ stock.current_price }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${{ stock.value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You don't own any stocks yet.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Bonds Section -->
+    <div style="margin: 20px;">
+        <h2>Bonds</h2>
+        {% if portfolio.bonds %}
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Bond ID</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Amount</th>
+                </tr>
+                {% for bond in portfolio.bonds %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ bond.bond_id }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${{ bond.amount }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You don't own any bonds yet.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Futures Section -->
+    <div style="margin: 20px;">
+        <h2>Futures</h2>
+        {% if portfolio.futures %}
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Position ID</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Symbol</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Contracts</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Position</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Margin</th>
+                </tr>
+                {% for future in portfolio.futures %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ future.position_id }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ future.symbol }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ future.contracts }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{{ future.position }}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${{ future.margin }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You don't have any futures positions yet.</p>
+        {% endif %}
+    </div>
+    
+    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+</body>
+</html> 

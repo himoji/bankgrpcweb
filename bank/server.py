@@ -1,4 +1,3 @@
-
 import logging
 from concurrent.futures import ThreadPoolExecutor
 import grpc
@@ -39,6 +38,10 @@ class Bank(bank_pb2_grpc.bankServicer):
             return bank_pb2.validationResponce(valid="false")
 
         return bank_pb2.validationResponce(valid="true")
+    
+    # Investment service methods would go here if we expanded the protobuf
+    # For now the investment functions are called directly,
+    # but in a production system they would be gRPC services
 
 
 
