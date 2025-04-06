@@ -170,14 +170,8 @@
     <h1 style="text-align: center;">Bond Trading</h1>
     
     <div class="navbar">
-        <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
+        <a href="portfolio.html">Back to Portfolio</a>
     </div>
-    
-    {% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-    {% endif %}
     
     <div class="info-box">
         <h3>About Bond Investing</h3>
@@ -237,9 +231,13 @@
                     <label for="bond_id">Select Bond:</label>
                     <select name="bond_id" id="bond_id" required>
                         <option value="">-- Select a bond --</option>
-                        {% for bond in available_bonds %}
-                        <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
-                        {% endfor %}
+                        <option value="T-10Y-25">10-Year Treasury - $1,000 (Yield: 3.45%, Maturity: 2033-05-15)</option>
+                        <option value="T-30Y-25">30-Year Treasury - $1,000 (Yield: 3.92%, Maturity: 2053-05-15)</option>
+                        <option value="CORP-AAPL-27">Apple Inc. Corporate Bond - $1,000 (Yield: 4.12%, Maturity: 2027-03-22)</option>
+                        <option value="CORP-MSFT-28">Microsoft Corp Bond - $1,000 (Yield: 3.95%, Maturity: 2028-08-15)</option>
+                        <option value="MUNI-CA-30">California Municipal Bond - $5,000 (Yield: 3.78%, Maturity: 2030-11-10)</option>
+                        <option value="CORP-AMZN-26">Amazon Corporate Bond - $1,000 (Yield: 4.25%, Maturity: 2026-06-30)</option>
+                        <option value="MUNI-NY-32">New York Municipal Bond - $5,000 (Yield: 3.62%, Maturity: 2032-09-01)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -259,9 +257,10 @@
                     <label for="bond_id_sell">Select Bond:</label>
                     <select name="bond_id" id="bond_id_sell" required>
                         <option value="">-- Select a bond --</option>
-                        {% for bond in available_bonds %}
-                        <option value="{{ bond[0] }}">{{ bond[1] }} - ${{ bond[2] }} (Yield: {{ bond[3] }}%, Maturity: {{ bond[4] }})</option>
-                        {% endfor %}
+                        <option value="T-10Y-25">10-Year Treasury - $1,000 (Yield: 3.45%, Maturity: 2033-05-15)</option>
+                        <option value="CORP-AAPL-27">Apple Inc. Corporate Bond - $1,000 (Yield: 4.12%, Maturity: 2027-03-22)</option>
+                        <option value="MUNI-CA-30">California Municipal Bond - $5,000 (Yield: 3.78%, Maturity: 2030-11-10)</option>
+                        <option value="CORP-MSFT-28">Microsoft Corp Bond - $1,000 (Yield: 3.95%, Maturity: 2028-08-15)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -286,21 +285,69 @@
                 <th>Credit Rating</th>
                 <th>Type</th>
             </tr>
-            {% for bond in available_bonds %}
             <tr>
-                <td>{{ bond[0] }}</td>
-                <td>{{ bond[1] }}</td>
-                <td>${{ bond[2] }}</td>
-                <td>{{ bond[3] }}%</td>
-                <td>{{ bond[4] }}</td>
-                <td>
-                    {% if loop.index % 4 == 0 %}A-{% elif loop.index % 4 == 1 %}AAA{% elif loop.index % 4 == 2 %}AA+{% else %}BBB+{% endif %}
-                </td>
-                <td>
-                    {% if loop.index % 3 == 0 %}Corporate{% elif loop.index % 3 == 1 %}Treasury{% else %}Municipal{% endif %}
-                </td>
+                <td>T-10Y-25</td>
+                <td>10-Year Treasury</td>
+                <td>$1,000</td>
+                <td>3.45%</td>
+                <td>2033-05-15</td>
+                <td>AAA</td>
+                <td>Treasury</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>T-30Y-25</td>
+                <td>30-Year Treasury</td>
+                <td>$1,000</td>
+                <td>3.92%</td>
+                <td>2053-05-15</td>
+                <td>AAA</td>
+                <td>Treasury</td>
+            </tr>
+            <tr>
+                <td>CORP-AAPL-27</td>
+                <td>Apple Inc. Corporate Bond</td>
+                <td>$1,000</td>
+                <td>4.12%</td>
+                <td>2027-03-22</td>
+                <td>AA+</td>
+                <td>Corporate</td>
+            </tr>
+            <tr>
+                <td>CORP-MSFT-28</td>
+                <td>Microsoft Corp Bond</td>
+                <td>$1,000</td>
+                <td>3.95%</td>
+                <td>2028-08-15</td>
+                <td>AAA</td>
+                <td>Corporate</td>
+            </tr>
+            <tr>
+                <td>MUNI-CA-30</td>
+                <td>California Municipal Bond</td>
+                <td>$5,000</td>
+                <td>3.78%</td>
+                <td>2030-11-10</td>
+                <td>A-</td>
+                <td>Municipal</td>
+            </tr>
+            <tr>
+                <td>CORP-AMZN-26</td>
+                <td>Amazon Corporate Bond</td>
+                <td>$1,000</td>
+                <td>4.25%</td>
+                <td>2026-06-30</td>
+                <td>AA+</td>
+                <td>Corporate</td>
+            </tr>
+            <tr>
+                <td>MUNI-NY-32</td>
+                <td>New York Municipal Bond</td>
+                <td>$5,000</td>
+                <td>3.62%</td>
+                <td>2032-09-01</td>
+                <td>BBB+</td>
+                <td>Municipal</td>
+            </tr>
         </table>
     </div>
     
@@ -360,6 +407,6 @@
             }
         });
     </script>
-    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+    <script type="text/javascript" src="../static/index.js"></script>
 </body>
 </html> 

@@ -186,14 +186,8 @@
     <h1 style="text-align: center;">Futures Trading</h1>
     
     <div class="navbar">
-        <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
+        <a href="portfolio.html">Back to Portfolio</a>
     </div>
-    
-    {% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-    {% endif %}
     
     <div class="info-box">
         <h3>About Futures Trading</h3>
@@ -257,9 +251,12 @@
                     <label for="futures_symbol">Select Futures Contract:</label>
                     <select name="futures_symbol" id="futures_symbol" required>
                         <option value="">-- Select a futures contract --</option>
-                        {% for future in available_futures %}
-                        <option value="{{ future[0] }}">{{ future[1] }} ({{ future[0] }}) - ${{ future[2] }} (Margin: {{ future[3]*100 }}%, Expiry: {{ future[4] }})</option>
-                        {% endfor %}
+                        <option value="CL">WTI Crude Oil (CL) - $79.43 (Margin: 10%, Expiry: 2023-12-20)</option>
+                        <option value="GC">Gold (GC) - $2,347.80 (Margin: 12%, Expiry: 2023-12-27)</option>
+                        <option value="ES">E-mini S&P 500 (ES) - $4,792.25 (Margin: 8%, Expiry: 2023-12-15)</option>
+                        <option value="NQ">E-mini NASDAQ-100 (NQ) - $16,780.50 (Margin: 9%, Expiry: 2023-12-15)</option>
+                        <option value="ZC">Corn (ZC) - $482.25 (Margin: 7%, Expiry: 2023-12-14)</option>
+                        <option value="6E">Euro FX (6E) - $1.0824 (Margin: 5%, Expiry: 2023-12-18)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -280,23 +277,19 @@
         <!-- Close Position Form -->
         <div class="card column">
             <h2>Close Futures Position</h2>
-            {% if current_positions %}
             <form method="POST">
                 <input type="hidden" name="action" value="close">
                 <div class="form-group">
                     <label for="position_id">Select Position to Close:</label>
                     <select name="position_id" id="position_id" required>
                         <option value="">-- Select a position --</option>
-                        {% for position in current_positions %}
-                        <option value="{{ position[0] }}">{{ position[1] }} - {{ position[2] }} contracts ({{ position[3] }})</option>
-                        {% endfor %}
+                        <option value="FUT-001">WTI Crude Oil (CL) - 2 contracts (Long)</option>
+                        <option value="FUT-002">Gold (GC) - 1 contract (Short)</option>
+                        <option value="FUT-003">E-mini S&P 500 (ES) - 1 contract (Long)</option>
                     </select>
                 </div>
                 <button type="submit">Close Position</button>
             </form>
-            {% else %}
-            <p>You don't have any open positions to close.</p>
-            {% endif %}
         </div>
     </div>
     
@@ -313,24 +306,64 @@
                 <th>Change (24h)</th>
                 <th>Volume</th>
             </tr>
-            {% for future in available_futures %}
             <tr>
-                <td>{{ future[0] }}</td>
-                <td>{{ future[1] }}</td>
-                <td>${{ future[2] }}</td>
-                <td>{{ future[3]*100 }}%</td>
-                <td>{{ future[4] }}</td>
-                <td class="{% if loop.index % 2 == 0 %}down{% else %}up{% endif %}">
-                    {% if loop.index % 2 == 0 %}-0.{{ loop.index * 12 }}% ↓{% else %}+0.{{ loop.index * 24 }}% ↑{% endif %}
-                </td>
-                <td>{{ loop.index * 5 + 3 }}K</td>
+                <td>CL</td>
+                <td>WTI Crude Oil</td>
+                <td>$79.43</td>
+                <td>10%</td>
+                <td>2023-12-20</td>
+                <td class="up">+0.24% ↑</td>
+                <td>8K</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>GC</td>
+                <td>Gold</td>
+                <td>$2,347.80</td>
+                <td>12%</td>
+                <td>2023-12-27</td>
+                <td class="down">-0.32% ↓</td>
+                <td>13K</td>
+            </tr>
+            <tr>
+                <td>ES</td>
+                <td>E-mini S&P 500</td>
+                <td>$4,792.25</td>
+                <td>8%</td>
+                <td>2023-12-15</td>
+                <td class="up">+0.85% ↑</td>
+                <td>18K</td>
+            </tr>
+            <tr>
+                <td>NQ</td>
+                <td>E-mini NASDAQ-100</td>
+                <td>$16,780.50</td>
+                <td>9%</td>
+                <td>2023-12-15</td>
+                <td class="down">-0.48% ↓</td>
+                <td>23K</td>
+            </tr>
+            <tr>
+                <td>ZC</td>
+                <td>Corn</td>
+                <td>$482.25</td>
+                <td>7%</td>
+                <td>2023-12-14</td>
+                <td class="up">+0.72% ↑</td>
+                <td>28K</td>
+            </tr>
+            <tr>
+                <td>6E</td>
+                <td>Euro FX</td>
+                <td>$1.0824</td>
+                <td>5%</td>
+                <td>2023-12-18</td>
+                <td class="down">-0.60% ↓</td>
+                <td>33K</td>
+            </tr>
         </table>
     </div>
     
     <!-- Current Positions Table -->
-    {% if current_positions %}
     <div class="card">
         <h2>Your Current Positions</h2>
         <table>
@@ -343,22 +376,35 @@
                 <th>Entry Price</th>
                 <th>Current P/L</th>
             </tr>
-            {% for position in current_positions %}
             <tr>
-                <td>{{ position[0] }}</td>
-                <td>{{ position[1] }}</td>
-                <td>{{ position[2] }}</td>
-                <td>{{ position[3] }}</td>
-                <td>${{ position[4] }}</td>
-                <td>${{ position[0]|int * 10 + 1200 }}</td>
-                <td class="{% if position[3] == 'long' and position[0]|int is even %}up{% elif position[3] == 'short' and position[0]|int is odd %}up{% else %}down{% endif %}">
-                    {% if position[3] == 'long' and position[0]|int is even %}+${{ position[2]|int * 25 }}{% elif position[3] == 'short' and position[0]|int is odd %}+${{ position[2]|int * 32 }}{% else %}-${{ position[2]|int * 18 }}{% endif %}
-                </td>
+                <td>FUT-001</td>
+                <td>CL</td>
+                <td>2</td>
+                <td>Long</td>
+                <td>$5,400.00</td>
+                <td>$78.50</td>
+                <td class="up">+$320.00</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>FUT-002</td>
+                <td>GC</td>
+                <td>1</td>
+                <td>Short</td>
+                <td>$4,600.00</td>
+                <td>$2,355.00</td>
+                <td class="up">+$220.00</td>
+            </tr>
+            <tr>
+                <td>FUT-003</td>
+                <td>ES</td>
+                <td>1</td>
+                <td>Long</td>
+                <td>$1,000.00</td>
+                <td>$4,747.25</td>
+                <td class="up">+$225.00</td>
+            </tr>
         </table>
     </div>
-    {% endif %}
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -414,6 +460,6 @@
             }
         });
     </script>
-    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+    <script type="text/javascript" src="../static/index.js"></script>
 </body>
 </html> 

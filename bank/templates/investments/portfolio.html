@@ -104,13 +104,13 @@
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Investment Portfolio for {{customer_name}}</h1>
+    <h1 style="text-align: center;">Investment Portfolio for John Doe</h1>
     
     <div class="navbar">
-        <a href="{{url_for("bank_views.stocksPage", customer_name=customer_name)}}">Stocks</a>
-        <a href="{{url_for("bank_views.bondsPage", customer_name=customer_name)}}">Bonds</a>
-        <a href="{{url_for("bank_views.futuresPage", customer_name=customer_name)}}">Futures</a>
-        <a href="{{url_for("views.accountPage", customer_name=customer_name)}}">Back to Account</a>
+        <a href="stocks.html">Stocks</a>
+        <a href="bonds.html">Bonds</a>
+        <a href="futures.html">Futures</a>
+        <a href="../account.html">Back to Account</a>
     </div>
     
     <div class="info-box">
@@ -152,74 +152,125 @@
     <!-- Stocks Section -->
     <div class="card">
         <h2>Stocks</h2>
-        {% if portfolio.stocks %}
-            <table>
-                <tr>
-                    <th>Symbol</th>
-                    <th>Shares</th>
-                    <th>Current Price</th>
-                    <th>Total Value</th>
-                </tr>
-                {% for stock in portfolio.stocks %}
-                <tr>
-                    <td>{{ stock.symbol }}</td>
-                    <td>{{ stock.shares }}</td>
-                    <td>${{ stock.current_price }}</td>
-                    <td>${{ stock.value }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>You don't own any stocks yet.</p>
-        {% endif %}
+        <table>
+            <tr>
+                <th>Symbol</th>
+                <th>Shares</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+            </tr>
+            <tr>
+                <td>AAPL</td>
+                <td>25</td>
+                <td>$187.32</td>
+                <td>$4,683.00</td>
+            </tr>
+            <tr>
+                <td>MSFT</td>
+                <td>15</td>
+                <td>$408.59</td>
+                <td>$6,128.85</td>
+            </tr>
+            <tr>
+                <td>GOOGL</td>
+                <td>10</td>
+                <td>$175.98</td>
+                <td>$1,759.80</td>
+            </tr>
+            <tr>
+                <td>AMZN</td>
+                <td>12</td>
+                <td>$182.41</td>
+                <td>$2,188.92</td>
+            </tr>
+            <tr>
+                <td>TSLA</td>
+                <td>30</td>
+                <td>$212.19</td>
+                <td>$6,365.70</td>
+            </tr>
+        </table>
     </div>
     
     <!-- Bonds Section -->
     <div class="card">
         <h2>Bonds</h2>
-        {% if portfolio.bonds %}
-            <table>
-                <tr>
-                    <th>Bond ID</th>
-                    <th>Amount</th>
-                </tr>
-                {% for bond in portfolio.bonds %}
-                <tr>
-                    <td>{{ bond.bond_id }}</td>
-                    <td>${{ bond.amount }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>You don't own any bonds yet.</p>
-        {% endif %}
+        <table>
+            <tr>
+                <th>Bond ID</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Yield</th>
+                <th>Maturity</th>
+            </tr>
+            <tr>
+                <td>T-10Y-25</td>
+                <td>10-Year Treasury</td>
+                <td>$10,000.00</td>
+                <td>3.45%</td>
+                <td>2033-05-15</td>
+            </tr>
+            <tr>
+                <td>CORP-AAPL-27</td>
+                <td>Apple Inc. Corporate Bond</td>
+                <td>$5,000.00</td>
+                <td>4.12%</td>
+                <td>2027-03-22</td>
+            </tr>
+            <tr>
+                <td>MUNI-CA-30</td>
+                <td>California Municipal Bond</td>
+                <td>$7,500.00</td>
+                <td>3.78%</td>
+                <td>2030-11-10</td>
+            </tr>
+            <tr>
+                <td>CORP-MSFT-28</td>
+                <td>Microsoft Corp Bond</td>
+                <td>$8,000.00</td>
+                <td>3.95%</td>
+                <td>2028-08-15</td>
+            </tr>
+        </table>
     </div>
     
     <!-- Futures Section -->
     <div class="card">
         <h2>Futures</h2>
-        {% if portfolio.futures %}
-            <table>
-                <tr>
-                    <th>Position ID</th>
-                    <th>Symbol</th>
-                    <th>Contracts</th>
-                    <th>Position</th>
-                    <th>Margin</th>
-                </tr>
-                {% for future in portfolio.futures %}
-                <tr>
-                    <td>{{ future.position_id }}</td>
-                    <td>{{ future.symbol }}</td>
-                    <td>{{ future.contracts }}</td>
-                    <td>{{ future.position }}</td>
-                    <td>${{ future.margin }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-            <p>You don't have any futures positions yet.</p>
-        {% endif %}
+        <table>
+            <tr>
+                <th>Position ID</th>
+                <th>Symbol</th>
+                <th>Contracts</th>
+                <th>Position</th>
+                <th>Margin</th>
+                <th>Current P/L</th>
+            </tr>
+            <tr>
+                <td>FUT-001</td>
+                <td>CL</td>
+                <td>2</td>
+                <td>Long</td>
+                <td>$5,400.00</td>
+                <td>+$320.00</td>
+            </tr>
+            <tr>
+                <td>FUT-002</td>
+                <td>GC</td>
+                <td>1</td>
+                <td>Short</td>
+                <td>$4,600.00</td>
+                <td>-$140.00</td>
+            </tr>
+            <tr>
+                <td>FUT-003</td>
+                <td>ES</td>
+                <td>1</td>
+                <td>Long</td>
+                <td>$1,000.00</td>
+                <td>+$225.00</td>
+            </tr>
+        </table>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -254,6 +305,6 @@
             }
         });
     </script>
-    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+    <script type="text/javascript" src="../static/index.js"></script>
 </body>
 </html> 

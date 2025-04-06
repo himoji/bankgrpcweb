@@ -161,14 +161,8 @@
     <h1 style="text-align: center;">Stock Trading</h1>
     
     <div class="navbar">
-        <a href="{{url_for("bank_views.investmentsPage", customer_name=customer_name)}}">Back to Portfolio</a>
+        <a href="portfolio.html">Back to Portfolio</a>
     </div>
-    
-    {% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-    {% endif %}
     
     <div class="info-box">
         <h3>About Stock Investing</h3>
@@ -213,9 +207,14 @@
                     <label for="stock_symbol">Select Stock:</label>
                     <select name="stock_symbol" id="stock_symbol" required>
                         <option value="">-- Select a stock --</option>
-                        {% for stock in available_stocks %}
-                        <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
-                        {% endfor %}
+                        <option value="AAPL">Apple Inc. (AAPL) - $187.32</option>
+                        <option value="MSFT">Microsoft Corp (MSFT) - $408.59</option>
+                        <option value="GOOGL">Alphabet Inc. (GOOGL) - $175.98</option>
+                        <option value="AMZN">Amazon.com Inc. (AMZN) - $182.41</option>
+                        <option value="TSLA">Tesla Inc. (TSLA) - $212.19</option>
+                        <option value="META">Meta Platforms Inc. (META) - $478.22</option>
+                        <option value="NVDA">NVIDIA Corp. (NVDA) - $940.28</option>
+                        <option value="BRK.B">Berkshire Hathaway (BRK.B) - $412.14</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -235,9 +234,11 @@
                     <label for="stock_symbol_sell">Select Stock:</label>
                     <select name="stock_symbol" id="stock_symbol_sell" required>
                         <option value="">-- Select a stock --</option>
-                        {% for stock in available_stocks %}
-                        <option value="{{ stock[0] }}">{{ stock[1] }} ({{ stock[0] }}) - ${{ stock[2] }}</option>
-                        {% endfor %}
+                        <option value="AAPL">Apple Inc. (AAPL) - $187.32</option>
+                        <option value="MSFT">Microsoft Corp (MSFT) - $408.59</option>
+                        <option value="GOOGL">Alphabet Inc. (GOOGL) - $175.98</option>
+                        <option value="AMZN">Amazon.com Inc. (AMZN) - $182.41</option>
+                        <option value="TSLA">Tesla Inc. (TSLA) - $212.19</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -261,18 +262,70 @@
                 <th>Market Cap</th>
                 <th>Volume</th>
             </tr>
-            {% for stock in available_stocks %}
             <tr>
-                <td>{{ stock[0] }}</td>
-                <td>{{ stock[1] }}</td>
-                <td>${{ stock[2] }}</td>
-                <td class="{% if loop.index % 3 == 0 %}down{% else %}up{% endif %}">
-                    {% if loop.index % 3 == 0 %}-0.{{ loop.index * 11 }}% ↓{% else %}+1.{{ loop.index * 23 }}% ↑{% endif %}
-                </td>
-                <td>${{ loop.index * 10 + 2 }}B</td>
-                <td>{{ loop.index * 3 + 1 }}M</td>
+                <td>AAPL</td>
+                <td>Apple Inc.</td>
+                <td>$187.32</td>
+                <td class="up">+1.23% ↑</td>
+                <td>$2.9T</td>
+                <td>4M</td>
             </tr>
-            {% endfor %}
+            <tr>
+                <td>MSFT</td>
+                <td>Microsoft Corp</td>
+                <td>$408.59</td>
+                <td class="up">+1.46% ↑</td>
+                <td>$3.1T</td>
+                <td>7M</td>
+            </tr>
+            <tr>
+                <td>GOOGL</td>
+                <td>Alphabet Inc.</td>
+                <td>$175.98</td>
+                <td class="down">-0.33% ↓</td>
+                <td>$2.2T</td>
+                <td>4M</td>
+            </tr>
+            <tr>
+                <td>AMZN</td>
+                <td>Amazon.com Inc.</td>
+                <td>$182.41</td>
+                <td class="up">+1.92% ↑</td>
+                <td>$1.9T</td>
+                <td>10M</td>
+            </tr>
+            <tr>
+                <td>TSLA</td>
+                <td>Tesla Inc.</td>
+                <td>$212.19</td>
+                <td class="down">-0.44% ↓</td>
+                <td>$672B</td>
+                <td>16M</td>
+            </tr>
+            <tr>
+                <td>META</td>
+                <td>Meta Platforms Inc.</td>
+                <td>$478.22</td>
+                <td class="up">+2.15% ↑</td>
+                <td>$1.2T</td>
+                <td>19M</td>
+            </tr>
+            <tr>
+                <td>NVDA</td>
+                <td>NVIDIA Corp.</td>
+                <td>$940.28</td>
+                <td class="up">+3.72% ↑</td>
+                <td>$2.3T</td>
+                <td>22M</td>
+            </tr>
+            <tr>
+                <td>BRK.B</td>
+                <td>Berkshire Hathaway</td>
+                <td>$412.14</td>
+                <td class="down">-0.88% ↓</td>
+                <td>$842B</td>
+                <td>25M</td>
+            </tr>
         </table>
     </div>
     
@@ -330,6 +383,6 @@
             }
         });
     </script>
-    <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script>
+    <script type="text/javascript" src="../static/index.js"></script>
 </body>
 </html> 
